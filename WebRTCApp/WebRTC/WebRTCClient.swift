@@ -28,7 +28,7 @@ class WebRTCClient: NSObject {
         super.init()
 
         // Configure audio session (optional but recommended for iOS)
-        RTCAudioSession.sharedInstance().useManualAudio = true
+//        RTCAudioSession.sharedInstance().useManualAudio = true
 
         let config = RTCConfiguration()
         config.iceServers = [RTCIceServer(urlStrings: ["stun:stun.l.google.com:19302"])]
@@ -60,6 +60,7 @@ class WebRTCClient: NSObject {
         try? session.setCategory(.playAndRecord,
                                  mode: .voiceChat,
                                  options: [.allowBluetoothHFP, .defaultToSpeaker])
+        try? session.overrideOutputAudioPort(.speaker)
         try? session.setActive(true)
 
         // Create WebRTC audio source/track via factory (direct init is unavailable)
@@ -79,6 +80,7 @@ class WebRTCClient: NSObject {
             "OfferToReceiveAudio": "true",
             "OfferToReceiveVideo": "true"
         ], optionalConstraints: nil)
+        
         peerConnection.offer(for: constraints) { [weak self] sdp, error in
             guard let self, let sdp = sdp, error == nil else { return }
             self.peerConnection.setLocalDescription(sdp) { _ in }
@@ -114,5 +116,23 @@ extension WebRTCClient: RTCPeerConnectionDelegate {
     }
     func peerConnection(_ peerConnection: RTCPeerConnection, didRemove candidates: [RTCIceCandidate]) {}
     func peerConnection(_ peerConnection: RTCPeerConnection, didOpen dataChannel: RTCDataChannel) {}
+    
+    func peerConnection(_ peerConnection: RTCPeerConnection,
+                        didAdd rtpReceiver: RTCRtpReceiver,
+                        streams: [RTCMediaStream]) {
+
+        print("Receiver track:", rtpReceiver.track)
+
+        if let videoTrack = rtpReceiver.track as? RTCVideoTrack {
+            print("Remote video received")
+            onRemoteStream?(videoTrack)
+        }
+
+        if let audioTrack = rtpReceiver.track as? RTCAudioTrack {
+            print("Remote audio received")
+            audioTrack.isEnabled = true
+        }
+    }
+
 }
 

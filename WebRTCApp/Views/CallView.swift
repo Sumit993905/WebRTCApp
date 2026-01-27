@@ -66,8 +66,10 @@ struct CallView: View {
         .ignoresSafeArea()
         .onAppear {
             webRTC.startCall(roomId: roomId, type: callType)
-            print("Local track:", webRTC.localVideoTrack)
-            print("Remote track:", webRTC.remoteVideoTrack)
+            print("Audio track:", webRTC.client.audioTrack)
+            print("Local audio:", webRTC.client.audioTrack)
+            print("Remote audio:", webRTC.client.onRemoteStream)
+
         }
 
         .onDisappear {

@@ -27,8 +27,12 @@ class WebRTCManager: ObservableObject {
     }
 
     func startCall(roomId: String, type: CallType) {
+        
         // Connect signaling immediately
         signaling.connect(roomId: roomId)
+        
+        // for audio
+        client.setupAudio()
 
         // Prepare local media if needed
         if type == .video {
