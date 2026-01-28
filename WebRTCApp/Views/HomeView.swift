@@ -13,6 +13,8 @@ struct HomeView: View {
     @State private var roomId = ""
     @State private var isConnected = false
     @State private var callType: CallType?
+    
+    @StateObject  var webRTC: WebRTCManager
 
     var body: some View {
         NavigationStack {
@@ -60,17 +62,23 @@ struct HomeView: View {
                         RoundedRectangle(cornerRadius: 8)
                             .stroke(Color.gray, lineWidth: 1)
                     )
+                Button("Sumit Room ID"){
+                    print(roomId)
+                }
 
                 
                 
                 Button("Audio Call 🎧") {
                     callType = .audio
+                    webRTC.startCall(roomId: roomId, type: callType!)
                 }
                 .disabled(!isConnected)
 
                 
                 Button("Video Call 🎥") {
                     callType = .video
+                    webRTC.startCall(roomId: roomId, type: callType!)
+
                 }
                 .disabled(!isConnected)
                 
@@ -104,5 +112,5 @@ struct HomeView: View {
 
 
 #Preview {
-    HomeView()
+    HomeView(webRTC: WebRTCManager.init())
 }

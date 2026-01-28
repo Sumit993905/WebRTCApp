@@ -48,14 +48,17 @@ class SocketSignalingClient {
 
     func sendOffer(_ sdp: String, roomId: String) {
         socket.emit("offer", ["sdp": sdp, "roomId": roomId])
+        print("offer \(roomId)")
     }
 
     func sendAnswer(_ sdp: String, roomId: String) {
         socket.emit("answer", ["sdp": sdp, "roomId": roomId])
+        print("answer \(roomId)")
     }
 
     func sendICE(_ dict: [String: Any], roomId: String) {
         socket.emit("ice", ["candidate": dict, "roomId": roomId])
+        print("Ice \(roomId)")
     }
     
     

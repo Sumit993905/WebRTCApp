@@ -11,7 +11,7 @@ import SwiftUI
 struct WebRTCAppApp: App {
     var body: some Scene {
         WindowGroup {
-            HomeView()
+            HomeView(webRTC:    WebRTCManager.init())
         }
     }
 }
