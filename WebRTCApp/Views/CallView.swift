@@ -68,7 +68,8 @@ struct CallView: View {
             webRTC.startCall(roomId: roomId, type: callType)
             print("Audio track:", webRTC.client.audioTrack)
             print("Local audio:", webRTC.client.audioTrack)
-            print("Remote audio:", webRTC.client.onRemoteStream)
+            print("Remote audio:", webRTC.client.remoteAudioTrack)
+
 
         }
 

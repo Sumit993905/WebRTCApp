@@ -19,6 +19,8 @@ class WebRTCClient: NSObject {
     }()
     var peerConnection: RTCPeerConnection!
     var audioTrack: RTCAudioTrack?
+    var remoteAudioTrack: RTCAudioTrack?
+
     var localVideoTrack: RTCVideoTrack?
 
     var onICECandidate: ((RTCIceCandidate) -> Void)?
@@ -26,9 +28,6 @@ class WebRTCClient: NSObject {
 
     override init() {
         super.init()
-
-        // Configure audio session (optional but recommended for iOS)
-//        RTCAudioSession.sharedInstance().useManualAudio = true
 
         let config = RTCConfiguration()
         config.iceServers = [RTCIceServer(urlStrings: ["stun:stun.l.google.com:19302"])]
@@ -104,9 +103,7 @@ class WebRTCClient: NSObject {
 
 extension WebRTCClient: RTCPeerConnectionDelegate {
     func peerConnection(_ peerConnection: RTCPeerConnection, didChange stateChanged: RTCSignalingState) {}
-    func peerConnection(_ peerConnection: RTCPeerConnection, didAdd stream: RTCMediaStream) {
-        onRemoteStream?(stream.videoTracks.first)
-    }
+    func peerConnection(_ peerConnection: RTCPeerConnection, didAdd stream: RTCMediaStream) { }
     func peerConnection(_ peerConnection: RTCPeerConnection, didRemove stream: RTCMediaStream) {}
     func peerConnectionShouldNegotiate(_ peerConnection: RTCPeerConnection) {}
     func peerConnection(_ peerConnection: RTCPeerConnection, didChange newState: RTCIceConnectionState) {}
@@ -121,18 +118,17 @@ extension WebRTCClient: RTCPeerConnectionDelegate {
                         didAdd rtpReceiver: RTCRtpReceiver,
                         streams: [RTCMediaStream]) {
 
-        print("Receiver track:", rtpReceiver.track)
-
         if let videoTrack = rtpReceiver.track as? RTCVideoTrack {
-            print("Remote video received")
             onRemoteStream?(videoTrack)
         }
 
         if let audioTrack = rtpReceiver.track as? RTCAudioTrack {
-            print("Remote audio received")
+            print("✅ Remote audio track received")
+            remoteAudioTrack = audioTrack
             audioTrack.isEnabled = true
         }
     }
+
 
 }
 
