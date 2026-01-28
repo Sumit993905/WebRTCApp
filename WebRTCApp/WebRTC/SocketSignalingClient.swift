@@ -10,7 +10,7 @@ import SocketIO
 
 class SocketSignalingClient {
     
-    let manager = SocketManager(socketURL: URL(string: "https://7708ac625a6d.ngrok-free.app")!)
+    let manager = SocketManager(socketURL: URL(string: "https://510e53db037e.ngrok-free.app")!)
     let socket: SocketIOClient
 
     var onOffer: ((String) -> Void)?
